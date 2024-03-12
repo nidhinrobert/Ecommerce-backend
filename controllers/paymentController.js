@@ -10,6 +10,12 @@ const Cart = require("../models/cartModal")
 const create_checkout_session = async (req, res) => {
     const { cartItems, userId, totalAmount } = req.body;
 
+    
+   
+
+
+
+
     const order = await Order.create({
         userId:userId,
         products:cartItems[0].items.map(item=>({

@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 
 
 const getAllOrdersService = asyncHandler(async (req, res) => {
+    
     try {
         const orders = await Order.aggregate([{ $match: { orderStatus: "complete" } }]);
 
@@ -27,7 +28,7 @@ const getOrderByIdService = asyncHandler(async (id) => {
 
 const getUserOrderService = asyncHandler(async (userId) => {
     try {
-        const order = await Order.find({ userId });
+        const order = await Order.find({ userId, orderStatus: 'complete' });
 
         return order;
     } catch (error) {

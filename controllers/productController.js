@@ -3,7 +3,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
-const { log } = require("console");
+
 
 // MULTER HANDLING
 const storage = multer.diskStorage({
@@ -40,7 +40,7 @@ const createProduct = async (req, res) => {
                 }
             }
 
-            
+
             const images = req.files.map(file => file.filename);
 
             try {
@@ -51,13 +51,13 @@ const createProduct = async (req, res) => {
                     discount,
                     specifications,
                     description,
-                    images, 
+                    images,
                 });
 
                 res.status(201).json(product);
             } catch (error) {
                 console.error(error);
-                
+
                 res.status(500).json({ error: "Error creating product." });
             }
         });
@@ -174,15 +174,27 @@ const deleteProduct = async (req, res) => {
 
 
 
+
 const getProductByCategory = async (req, res) => {
     try {
         const { categoryId } = req.query;
+        const search = req.query.search || '';
+        const currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1; 
+        const itemsPerPage = req.query.itemsPerPage ? parseInt(req.query.itemsPerPage) : 10; 
        
+        const matchStage = {};
+
+        if (search) {
+            matchStage.$or = [
+              { name: { $regex: search, $options: 'i' } },
+            ];
+        }
 
         const aggregationPipeline = [
             {
                 $match: {
-                    categoryId: String(categoryId)
+                    categoryId: String(categoryId),
+                    ...matchStage 
                 }
             },
             {
@@ -219,4 +231,6 @@ const getProductByCategory = async (req, res) => {
 
 
 
-module.exports = { getProducts, createProduct,getProduct,getProductByCategory,updateProduct,deleteProduct}
+
+
+module.exports = { getProducts, createProduct, getProduct, getProductByCategory, updateProduct, deleteProduct }
