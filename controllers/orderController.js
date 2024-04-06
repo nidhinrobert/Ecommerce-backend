@@ -2,20 +2,26 @@ const asyncHandler = require('express-async-handler');
 const Order = require('../models/orderModal');
 const orderService = require('../services/orderServices');
 
+const { ObjectId } = require('mongoose').Types;
 
 
 // get all orders
 const getAllOrders = asyncHandler(async (req, res) => {
-  
+    const search = req.query.search ||'';
     const currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     const itemsPerPage = req.query.itemsPerPage ? parseInt(req.query.itemsPerPage) : 10;
-
+    
     
     try {
         const matchStage = {
             orderStatus: "complete" 
         };
-     
+        if (search) {
+            matchStage.$or = [
+                { _id: ObjectId.isValid(search) ? new ObjectId(search) : null },
+                { customerEmail: { $regex: search, $options: 'i' } },
+            ].filter(Boolean);
+        }
         
         const aggregationPipeline = [
             { $match: matchStage },

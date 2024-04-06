@@ -115,7 +115,7 @@ const updateProduct = async (req, res) => {
 
             const { name, categoryId, price, discount, specifications, description } = req.body;
 
-            // Update product fields
+            
             product.name = name || product.name;
             product.categoryId = categoryId || product.categoryId;
             product.price = price || product.price;
@@ -123,7 +123,7 @@ const updateProduct = async (req, res) => {
             product.specifications = specifications || product.specifications;
             product.description = description || product.description;
 
-            // Update product images if new files are provided
+         
             if (req.files && req.files.length > 0) {
                 const newImages = req.files.map(file => file.filename);
                 product.images = newImages;
@@ -179,8 +179,7 @@ const getProductByCategory = async (req, res) => {
     try {
         const { categoryId } = req.query;
         const search = req.query.search || '';
-        const currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1; 
-        const itemsPerPage = req.query.itemsPerPage ? parseInt(req.query.itemsPerPage) : 10; 
+        
        
         const matchStage = {};
 
